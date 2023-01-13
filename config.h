@@ -99,8 +99,8 @@ static const Key keys[] = {
 
     { 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = volupcmd } },
     { 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = updatevolume} },
-    { 0, XF86XK_MonBrightnessUp,	spawn,		{.v = (const char*[]){ "xbacklight", "-inc", "15", NULL } } },
-    { 0, XF86XK_MonBrightnessDown,	spawn,		{.v = (const char*[]){ "xbacklight", "-dec", "15", NULL } } },
+    { 0, XF86XK_MonBrightnessUp,	spawn,		{.v = (const char*[]){ "sudo", "xbacklight", "-inc", "15", NULL } } },
+    { 0, XF86XK_MonBrightnessDown,	spawn,		{.v = (const char*[]){ "sudo", "xbacklight", "-dec", "15", NULL } } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY|ShiftMask,             XK_j,      rotatestack,    {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      rotatestack,    {.i = -1 } },
