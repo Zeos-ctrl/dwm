@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <X11/XF86keysym.h>
+#include "fibonacci.c"
 
 /* appearance */
 static const unsigned int borderpx  = 0;        /* border pixel of windows */
@@ -10,14 +11,14 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int horizpadbar        = 2;        /* horizontal padding for statusbar */
 static const int vertpadbar         = 0;        /* vertical padding for statusbar */
 
-static const char *fonts[]          = { "JetBrainsMono Nerd Font Mono:size=15" };
-static const char dmenufont[]       = "JetBrainsMono Nerd Font Mono:size=15";
+static const char *fonts[]          = { "JetBrainsMono Nerd Font Mono:size=14" };
+static const char dmenufont[]       = "JetBrainsMono Nerd Font Mono:size=14";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#1D2021";
 static const char col_gray3[]       = "#A89984";
 static const char col_gray4[]       = "#EBDBB2";
 static const char col_cyan[]        = "#427B58";
-static const unsigned int baralpha = 0xd0;
+static const unsigned int baralpha = 0x99;
 static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
@@ -31,7 +32,7 @@ static const unsigned int alphas[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "ﰍ", "", "辶", "", ""};
+static const char *tags[] = { "", "ﰍ", "辶", "", ""};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -47,7 +48,7 @@ static const Rule rules[] = {
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
-static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 
 #include "grid.c"
 static const Layout layouts[] = {
@@ -55,8 +56,10 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
-	{ NULL,       NULL },
 	{ "HHH",      grid },
+ 	{ "[@]",      spiral },
+ 	{ "[\\]",      dwindle },
+	{ NULL,       NULL },
 };
 
 /* key definitions */
@@ -76,17 +79,19 @@ static const Layout layouts[] = {
 static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", col_gray2, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *scrot[] = {"scrot", "-s", NULL};
-static const char *powermenu[] = {"/home/zeos/.config/dwm/.scripts/powermenu.sh",NULL};
+static const char *powermenu[] = {"/home/zeos/Cloned-repos/dwm/.scripts/powermenu.sh",NULL};
+static const char *passmenu[] = {"/home/zeos/Cloned-repos/dwm/.scripts/passmenu.sh",NULL};
 
 /* audio and backlight things */
-static const char *mutecmd[] = { "pactl", "set-sink-mute", "1", "toggle", NULL };
-static const char *volupcmd[] = { "pactl", "set-sink-volume", "1", "+5%", NULL };
-static const char *voldowncmd[] = { "pactl", "set-sink-volume", "1", "-5%", NULL };
+static const char *mutecmd[] = { "pactl", "set-sink-mute", "0", "toggle", NULL };
+static const char *volupcmd[] = {"/home/zeos/Cloned-repos/dwm/.scripts/volumeup.sh",NULL};
+static const char *voldowncmd[] = {"/home/zeos/Cloned-repos/dwm/.scripts/volumedown.sh",NULL};
 static const char *updatevolume[] = {"pkill", "-RTMIN+10", "dwmblocks", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY|ShiftMask,             XK_p,      spawn,          {.v = passmenu } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = powermenu}},
 	{ MODKEY,                       XK_F6,     spawn,          {.v = scrot} },
@@ -99,8 +104,8 @@ static const Key keys[] = {
 
     { 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = volupcmd } },
     { 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = updatevolume} },
-    { 0, XF86XK_MonBrightnessUp,	spawn,		{.v = (const char*[]){ "sudo", "xbacklight", "-inc", "15", NULL } } },
-    { 0, XF86XK_MonBrightnessDown,	spawn,		{.v = (const char*[]){ "sudo", "xbacklight", "-dec", "15", NULL } } },
+    { 0, XF86XK_MonBrightnessUp,	spawn,		{.v = (const char*[]){ "xbacklight", "-inc", "15", NULL } } },
+    { 0, XF86XK_MonBrightnessDown,	spawn,		{.v = (const char*[]){ "xbacklight", "-dec", "15", NULL } } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY|ShiftMask,             XK_j,      rotatestack,    {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      rotatestack,    {.i = -1 } },
@@ -117,6 +122,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY|ControlMask,		XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
@@ -150,7 +157,10 @@ static const Button buttons[] = {
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
 	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
-    { ClkStatusText,        ShiftMask,      Button3,        spawn,          SHCMD("st -e nvim ~/.config/dwmblocks/blocks.def.h") },
+	{ ClkStatusText,        MODKEY,         Button1,        sigstatusbar,   {.i = 4} },
+	{ ClkStatusText,        MODKEY,         Button2,        sigstatusbar,   {.i = 5} },
+	{ ClkStatusText,        MODKEY,         Button3,        sigstatusbar,   {.i = 6} },
+    { ClkStatusText,        ShiftMask,      Button3,        spawn,          SHCMD("st -e nvim /home/zeos/Cloned-repos/dwmblocks/blocks.def.h") },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
