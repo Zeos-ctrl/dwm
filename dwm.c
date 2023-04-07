@@ -45,7 +45,7 @@
 #include "drw.h"
 #include "util.h"
 
-static const unsigned int gappx     = 20;        /* gaps between windows */
+static const unsigned int gappx     = 16;        /* gaps between windows */
 
 /* macros */
 #define BUTTONMASK              (ButtonPressMask|ButtonReleaseMask)

@@ -79,6 +79,8 @@ static const Layout layouts[] = {
 static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", col_gray2, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *scrot[] = {"scrot", "-s", NULL};
+static const char *ytfzf[] = {"ytfzf", "-D", NULL};
+static const char *ranger[] = {"st","-e","ranger", NULL};
 static const char *powermenu[] = {"/home/zeos/Cloned-repos/dwm/.scripts/powermenu.sh",NULL};
 static const char *passmenu[] = {"/home/zeos/Cloned-repos/dwm/.scripts/passmenu.sh",NULL};
 
@@ -95,6 +97,8 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = powermenu}},
 	{ MODKEY,                       XK_F6,     spawn,          {.v = scrot} },
+	{ MODKEY,                       XK_r,     spawn,          {.v = ranger} },
+	{ MODKEY,                       XK_y,     spawn,          {.v = ytfzf} },
 
     { 0,                            XF86XK_AudioMute, spawn,   {.v = mutecmd } },
     { 0,                            XF86XK_AudioMute, spawn, {.v = updatevolume} },
@@ -122,8 +126,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} },
-	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} },
+	{ MODKEY,                       XK_v,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask,             XK_v,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY|ControlMask,		XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
